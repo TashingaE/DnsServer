@@ -501,7 +501,7 @@ namespace DnsServerCore.Dhcp
                 return existingLease;
             }
 
-            if (_reservedLeases != null)
+            if (_reservedLeases)
             {
                 ClientIdentifierOption clientIdentifierKey = new ClientIdentifierOption(1, request.ClientHardwareAddress);
                 foreach (Lease reservedLease in _reservedLeases)
@@ -512,7 +512,10 @@ namespace DnsServerCore.Dhcp
                         IPAddress reservedLeaseAddress = reservedLease.Address;
 
                         if (!IsAddressAvailable(ref reservedLeaseAddress))
+                        {
+
                             break; //reserved lease address is already allocated so ignore reserved lease
+                        }
 
                         Lease reservedOffer = new Lease(LeaseType.Reserved, request.ClientIdentifier, request.HostName?.HostName, request.ClientHardwareAddress, reservedLease.Address, null, GetLeaseTime());
 
